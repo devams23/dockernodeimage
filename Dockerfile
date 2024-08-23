@@ -1,8 +1,8 @@
 # Use the official Node.js image from the Docker Hub
-FROM node:18-alpine
+FROM node:18-alpine as stag1
 
 #set the working directory
-WORKDIR /the/workdir/path
+WORKDIR /apppath
 # Copy the package.json and package-lock.json to the working directory
 COPY package*.json ./
 
@@ -15,4 +15,11 @@ COPY . .
 EXPOSE 8000
 
 # Define the command to run your app
+#ENTRYPOINT ["node", "index.js"]
+
+FROM busybox as stag2
+WORKDIR /apppath
+
+COPY --from=stag1 /apppath .
+
 ENTRYPOINT ["node", "index.js"]
